@@ -27,9 +27,10 @@ class Frame:
                 mask = loadImg(Mask).convert('L')
                 self.img = Image.composite(self.img, Image.new('RGBA', self.img.size), mask)
             self.imgSurface = imageToSurface(self.img)
+            return self
         except Exception as e:
             handleCrash(f'error while loading image:{e}')
-        return self
+        
     def render(self):
         try:
             if self.img is not None:
