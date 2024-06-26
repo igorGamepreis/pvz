@@ -3,6 +3,9 @@ import os
 import json
 from PIL import Image
 
+menu = 'menu'
+scenes = []
+
 def imageToSurface(image):
     img = image.convert("RGBA")
     size = img.size
@@ -119,8 +122,7 @@ def handleQuit():
         newData[name] = eval(name)
     save(newData)
 
-menu = 'menu'
-scenes = []
+
 
 class Scene:
     def __init__(self, menu):
@@ -146,18 +148,15 @@ path = 'C:/Users/kaykv/Videos/Roblox/PVZ/images'
 
 mainMenu = Scene('main')
 
-menuBackground = Frame(78,248)
-backgroundTree = Frame(0,-70)
-backgroundSun = Frame(0,0)
-menuGrave = Frame(70,40)
+menuBackground = Frame(78,248, mainMenu)
+backgroundTree = Frame(0,-70, mainMenu)
+backgroundSun = Frame(0,0, mainMenu)
+menuGrave = Frame(70,40, mainMenu)
 
-mainMenu.build([
-    backgroundSun.load(f'{path}/backgroundSun.jpg'),
-    menuBackground.load(f'{path}/mainBackground.jpg', Mask=f'{path}/mainBackgroundMask.png'),
-    backgroundTree.load(f'{path}/mainBackgroundTree.jpg', Mask=f'{path}/mainBackgroundTreeMask.png'),
-    
-    menuGrave.load(f'{path}/menuGrave.jpg', Mask=f'{path}/menuGraveMask.png')
-])
+backgroundSun.load(f'{path}/backgroundSun.jpg')
+menuBackground.load(f'{path}/mainBackground.jpg', Mask=f'{path}/mainBackgroundMask.png')
+backgroundTree.load(f'{path}/mainBackgroundTree.jpg', Mask=f'{path}/mainBackgroundTreeMask.png')
+menuGrave.load(f'{path}/menuGrave.jpg', Mask=f'{path}/menuGraveMask.png')
 
 backgroundSun.resize(screens)
 
