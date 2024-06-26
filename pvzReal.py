@@ -128,7 +128,8 @@ class Scene:
         self.frames = []
         scenes.append(self)
     def build(self, frames):
-        self.frames.append(*frames)
+        for frame in frames:
+            self.frames.append(frame)
 
 gameRunning = True
 
@@ -151,10 +152,11 @@ backgroundSun = Frame(0,0)
 menuGrave = Frame(70,40)
 
 mainMenu.build([
-menuBackground.load(f'{path}/mainBackground.jpg', Mask=f'{path}/mainBackgroundMask.png'),
-backgroundTree.load(f'{path}/mainBackgroundTree.jpg', Mask=f'{path}/mainBackgroundTreeMask.png'),
-backgroundSun.load(f'{path}/backgroundSun.jpg'),
-menuGrave.load(f'{path}/menuGrave.jpg', Mask=f'{path}/menuGraveMask.png')
+    backgroundSun.load(f'{path}/backgroundSun.jpg'),
+    menuBackground.load(f'{path}/mainBackground.jpg', Mask=f'{path}/mainBackgroundMask.png'),
+    backgroundTree.load(f'{path}/mainBackgroundTree.jpg', Mask=f'{path}/mainBackgroundTreeMask.png'),
+    
+    menuGrave.load(f'{path}/menuGrave.jpg', Mask=f'{path}/menuGraveMask.png')
 ])
 
 backgroundSun.resize(screens)
