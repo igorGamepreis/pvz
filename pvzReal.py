@@ -166,9 +166,8 @@ while gameRunning:
     screen.fill((120,150,255))
     
     for scene in scenes:
-        if menu == scene.menu:
-            for frame in scene.frames:
-                frame.render(screen)
+        for frame in scene.frames:
+            frame.render(screen)
 
     pygame.display.flip()
     clock.tick(60)
