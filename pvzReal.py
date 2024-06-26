@@ -3,6 +3,49 @@ import os
 import json
 from PIL import Image
 
+SAVE_FILE_PATH = "./save.json"
+
+def handleCrash(error_message):
+    pygame.display.quit()
+    
+    pygame.display.init()
+    
+    screen_info = pygame.display.Info()
+    size = screen_info.current_h//5
+
+    new_screen = pygame.display.set_mode((screen_info.current_w, size))
+    pygame.display.set_caption("Error")
+
+    new_screen.fill((0, 0, 0))
+
+    font = pygame.font.SysFont(None, 20)
+    text_surface = font.render('Something went wrong: '+repr(error_message), True, (255, 0, 0))
+
+    text_rect = text_surface.get_rect(center=new_screen.get_rect().center)
+
+    new_screen.blit(text_surface, text_rect)
+
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                waiting = False
+                pygame.quit()
+
+def loadImg(file_path):
+    if not os.path.exists(file_path):
+        handleCrash(f"no image found in {file_path}")
+        return None
+    
+    try:
+        rawImage = Image.open(file_path)
+    except pygame.error as e:
+        handleCrash(f'Pygame error {e}')
+        return None
+    
+    return rawImage
+    
 def imageToSurface(image):
     img = image.convert("RGBA")
     size = img.size
@@ -49,35 +92,6 @@ class Frame:
             handleCrash(f'error while rendering image:{e}')
         return self
 
-SAVE_FILE_PATH = "./save.json"
-
-def handleCrash(error_message):
-    pygame.display.quit()
-    
-    pygame.display.init()
-    
-    screen_info = pygame.display.Info()
-    size = screen_info.current_h//5
-
-    new_screen = pygame.display.set_mode((screen_info.current_w, size))
-    pygame.display.set_caption("Error")
-
-    new_screen.fill((0, 0, 0))
-
-    font = pygame.font.SysFont(None, 20)
-    text_surface = font.render('Something went wrong: '+repr(error_message), True, (255, 0, 0))
-
-    text_rect = text_surface.get_rect(center=new_screen.get_rect().center)
-
-    new_screen.blit(text_surface, text_rect)
-
-    pygame.display.flip()
-    waiting = True
-    while waiting:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                waiting = False
-                pygame.quit()
 
 def save(data):
     try:
@@ -97,18 +111,6 @@ def load():
     except Exception as e:
         handleCrash(e)
 
-def loadImg(file_path):
-    if not os.path.exists(file_path):
-        handleCrash(f"no image found in {file_path}")
-        return None
-    
-    try:
-        rawImage = Image.open(file_path)
-    except pygame.error as e:
-        handleCrash(f'Pygame error {e}')
-        return None
-    
-    return rawImage
 
 if not os.path.exists(SAVE_FILE_PATH):
     with open(SAVE_FILE_PATH, 'w') as file:
