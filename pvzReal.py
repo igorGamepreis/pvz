@@ -29,12 +29,14 @@ class Frame:
             self.imgSurface = imageToSurface(self.img)
         except Exception as e:
             handleCrash(f'error while loading image:{e}')
+        return self
     def render(self):
-            try:
-                if self.img is not None:
-                    screen.blit(self.imgSurface, self.pos())
-            except Exception as e:
-                handleCrash(f'error while rendering image:{e}')
+        try:
+            if self.img is not None:
+                screen.blit(self.imgSurface, self.pos())
+        except Exception as e:
+            handleCrash(f'error while rendering image:{e}')
+        return self
 
 SAVE_FILE_PATH = "./save.json"
 
@@ -108,7 +110,7 @@ if not os.path.exists(SAVE_FILE_PATH):
 data, _ = load()
 
 for name, value in data.items():
-    exec(f'{name}={value}')
+    exec(f'{name}={value}', globals())
 
 def handleQuit():
     newData = {}
@@ -116,13 +118,22 @@ def handleQuit():
         newData[name] = eval(name)
     save(newData)
 
-gameRunning = True
+menu = 'menu'
+scenes = []
 
+class Scene:
+    def __init__(self, menu):
+        self.menu = menu
+        self.frames = []
+        scenes.append(self)
+    def build(self, frames):
+        self.frames.append(*frames)
+
+gameRunning = True
 
 pygame.init()
 pygame.display.set_caption('Plants Vs. Zombies')
 info = pygame.display.Info()
-
 
 screen = pygame.display.set_mode((800, 595))
 screens = pygame.display.get_window_size()
@@ -131,25 +142,29 @@ clock = pygame.time.Clock()
 
 path = 'C:/Users/kaykv/Videos/Roblox/PVZ/images'
 
+mainMenu = Scene('main')
+
 menuBackground = Frame(78,248)
 backgroundTree = Frame(0,-70)
 backgroundSun = Frame(0,0)
 menuGrave = Frame(70,40)
 
-menuBackground.load(f'{path}/mainBackground.jpg', Mask=f'{path}/mainBackgroundMask.png')
-backgroundTree.load(f'{path}/mainBackgroundTree.jpg', Mask=f'{path}/mainBackgroundTreeMask.png')
-backgroundSun.load(f'{path}/backgroundSun.jpg')
+mainMenu.build([
+menuBackground.load(f'{path}/mainBackground.jpg', Mask=f'{path}/mainBackgroundMask.png'),
+backgroundTree.load(f'{path}/mainBackgroundTree.jpg', Mask=f'{path}/mainBackgroundTreeMask.png'),
+backgroundSun.load(f'{path}/backgroundSun.jpg'),
 menuGrave.load(f'{path}/menuGrave.jpg', Mask=f'{path}/menuGraveMask.png')
+])
 
 backgroundSun.resize(screens)
 
 while gameRunning:
     screen.fill((120,150,255))
     
-    backgroundSun.render()
-    menuBackground.render()
-    backgroundTree.render()
-    menuGrave.render()
+    for scene in scenes:
+        if menu == scene.menu:
+            for frame in scene.frames:
+                frame.render()
 
     pygame.display.flip()
     clock.tick(60)
