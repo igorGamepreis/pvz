@@ -3,17 +3,24 @@ import os
 import json
 from PIL import Image
 
-menu = 'menu'
-scenes = []
-
 def imageToSurface(image):
     img = image.convert("RGBA")
     size = img.size
     image_data = img.tobytes()
     return pygame.image.fromstring(image_data, size, 'RGBA')
 
+menu = 'menu'
+scenes = []
+
+class Scene:
+    def __init__(self, menu):
+        self.menu = menu
+        self.frames = []
+        scenes.append(self)
+
 class Frame:
-    def __init__(self, x, y):
+    def __init__(self, x, y, scene):
+        scene.frames.append(self)
         self.x = x
         self.y = y
         self.img = None
@@ -124,14 +131,7 @@ def handleQuit():
 
 
 
-class Scene:
-    def __init__(self, menu):
-        self.menu = menu
-        self.frames = []
-        scenes.append(self)
-    def build(self, frames):
-        for frame in frames:
-            self.frames.append(frame)
+
 
 gameRunning = True
 
