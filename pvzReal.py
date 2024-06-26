@@ -41,7 +41,7 @@ class Frame:
         except Exception as e:
             handleCrash(f'error while loading image:{e}')
         
-    def render(self):
+    def render(self, screen):
         try:
             if self.img is not None:
                 screen.blit(self.imgSurface, self.pos())
@@ -166,7 +166,7 @@ while gameRunning:
     for scene in scenes:
         if menu == scene.menu:
             for frame in scene.frames:
-                frame.render()
+                frame.render(screen)
 
     pygame.display.flip()
     clock.tick(60)
